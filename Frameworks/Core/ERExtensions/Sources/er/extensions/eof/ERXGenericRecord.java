@@ -776,7 +776,8 @@ public class ERXGenericRecord extends EOGenericRecord implements ERXGuardedObjec
 	private NSDictionary<String, Object> createUuidPrimaryKey(NSArray<EOAttribute> primaryKeyAttributes) {
 		if (primaryKeyAttributes.count() == 1) {
 			EOAttribute primaryKeyAttribute = primaryKeyAttributes.objectAtIndex(0);			
-			if (primaryKeyAttribute.prototypeName().equals(uuidPrototypeName)) {
+			String prototypeName = primaryKeyAttribute.prototypeName();
+			if (prototypeName != null && prototypeName.equals(uuidPrototypeName)) {
 				return new NSDictionary<String, Object>(UUIDUtilities.generateAsNSData(), primaryKeyAttribute.name());
 			}
 		}
@@ -1125,7 +1126,7 @@ public class ERXGenericRecord extends EOGenericRecord implements ERXGuardedObjec
 			if (cd instanceof ERXEntityClassDescription) {
 				((ERXEntityClassDescription) cd).validateObjectWithUserInfo(this, value, "validateForKey." + key, key);
 			}
-			value = _validateValueForKey(value, key);
+			result = _validateValueForKey(value, key);
 		}
 		catch (ERXValidationException e) {
 			throw e;
