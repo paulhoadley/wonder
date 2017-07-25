@@ -32,7 +32,7 @@
     <property name="framework.erjars.joda" value="joda-time-2.9.7.jar" />
     <property name="framework.erjars.junit" value="junit-4.12.jar" />
     <property name="framework.erjars.log4j" value="log4j-1.2.17.jar" />
-    <property name="framework.erjars.ognl" value="ognl-3.1.12.jar" />
+    <property name="framework.erjars.ognl" value="ognl-3.2.jar" />
     <property name="framework.erjars.slf4j.api" value="slf4j-api-1.7.23.jar" />
     <property name="framework.erjars.slf4j.log4j12" value="slf4j-log4j12-1.7.23.jar" />
 
@@ -1116,12 +1116,19 @@
        </antcall>
     </target>    
 	
+    <target name="ERGoogleSignIn.all">
+        <antcall target="global.framework.${build.action}">
+            <param name="project.dir" value="Frameworks/Misc/ERGoogleSignIn" />
+            <param name="wo.external.root.bundles" value="${frameworks.wonder.core}" />
+        </antcall>
+    </target>
+
     <!--
         The targets here correspond to a top-level directory, split into frameworks, apps and examples
         to add your own, add a target definition above and choose the correct group below
      -->
 
-    <target name="common.frameworks.all" depends="ERJars.all, JavaWOExtensions.all, ERExtensions.all, Ajax.all, ERDirectToWeb.all, ERNeutralLook.all, ERSelenium.all, WOOgnl.all, ERPrototypes.all, ERPlot.all, ERIndexing.all, ERChronic.all, ERCaptcha.all, ERProfiling.all, EROpenID.all, ERJaxWS.all, ERPDFGeneration.all, ERJGroupsSynchronizer.all, ERRest.all, ERAttachment.all, ERTaggable.all, ERCMail.all, ERJavaMail.all, ERCoreBusinessLogic.all, ERChangeNotificationJMS.all, ERCalendar.all, ERExcelLook.all, BTBusinessLogic.all, JavaMemoryAdaptor.all, JavaNeo4JAdaptor.all, JavaLuceneAdaptor.all, JavaFSAdaptor.all, JavaERJDBCAdaptor.all, WOLips.all, WOJRebel.all, ERMoviesLogic.all, SnapshotExplorer.all, ERJasperReports.all, ERAttributeExtension.all, ERWOAdaptor.all, ERCayenne.all, ERCayenne.all, ERDistribution.all, MooTools.all, ERJQueryMobile.all, ERJQMobile.all, ERPersistentSessionStorage.all, ERQuartzScheduler.all, ERXiss.all, ERFirebug.all, ERXPartialBaseModel.all, ERXPartialsExampleModel.all" />
+    <target name="common.frameworks.all" depends="ERJars.all, JavaWOExtensions.all, ERExtensions.all, Ajax.all, ERDirectToWeb.all, ERNeutralLook.all, ERSelenium.all, WOOgnl.all, ERPrototypes.all, ERPlot.all, ERIndexing.all, ERChronic.all, ERCaptcha.all, ERProfiling.all, EROpenID.all, ERJaxWS.all, ERPDFGeneration.all, ERJGroupsSynchronizer.all, ERRest.all, ERAttachment.all, ERTaggable.all, ERCMail.all, ERJavaMail.all, ERCoreBusinessLogic.all, ERChangeNotificationJMS.all, ERCalendar.all, ERExcelLook.all, BTBusinessLogic.all, JavaMemoryAdaptor.all, JavaNeo4JAdaptor.all, JavaLuceneAdaptor.all, JavaFSAdaptor.all, JavaERJDBCAdaptor.all, WOLips.all, WOJRebel.all, ERMoviesLogic.all, SnapshotExplorer.all, ERJasperReports.all, ERAttributeExtension.all, ERWOAdaptor.all, ERCayenne.all, ERCayenne.all, ERDistribution.all, MooTools.all, ERJQueryMobile.all, ERJQMobile.all, ERPersistentSessionStorage.all, ERQuartzScheduler.all, ERXiss.all, ERFirebug.all, ERGoogleSignIn.all, ERXPartialBaseModel.all, ERXPartialsExampleModel.all" />
 
     <target name="common.applications.all" depends="BugTracker.all, ERMailer.all, Uber.all, SecretPal.all, ERXTest.all, PluginTest.all, WOTested.all" />
     
