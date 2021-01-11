@@ -2,6 +2,9 @@ package er.extensions.eof;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -10,7 +13,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.icu.text.SimpleDateFormat;
 import com.webobjects.eoaccess.EOAdaptor;
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAttribute;
@@ -27,9 +29,11 @@ import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSForwardException;
 import com.webobjects.foundation.NSKeyValueCoding;
+import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSMutableSet;
@@ -41,6 +45,7 @@ import com.webobjects.jdbcadaptor.JDBCPlugIn;
 
 import er.extensions.eof.ERXEOAccessUtilities.ChannelAction;
 import er.extensions.foundation.ERXProperties;
+import er.extensions.foundation.ERXStringUtilities;
 import er.extensions.jdbc.ERXSQLHelper;
 
 /**
@@ -271,7 +276,7 @@ public class ERXQuery {
 	/** 
 	 * <a href="http://wiki.wocommunity.org/display/documentation/Wonder+Logging">new org.slf4j.Logger</a> 
 	 */
-	private static final Logger log = LoggerFactory.getLogger(ERXQuery.class);
+	static final Logger log = LoggerFactory.getLogger(ERXQuery.class);
 	
 	protected EOEditingContext editingContext;
 	protected EOEntity mainEntity;
@@ -461,10 +466,11 @@ public class ERXQuery {
 				for (Object e : iterable) {
 					groupBy(e);
 				}
-			} else {
+			} else if (obj != null) {
 				throw new RuntimeException(getClass().getSimpleName() 
 						+ "'s groupBy() does not accept instances of " 
-						+ obj.getClass().getName());
+						+ obj.getClass().getName() + ". Only String, ERXKey, EOAttribute "
+								+ "or collection of them are valid.");
 			}
 		}
 		return this;
@@ -490,10 +496,11 @@ public class ERXQuery {
 				for (Object o : iterable) {
 					orderBy(o);
 				}
-			} else {
+			} else if (obj != null) {
 				throw new RuntimeException(getClass().getSimpleName() 
 						+ "'s orderBy() does not accept instances of " 
-						+ obj.getClass().getName());
+						+ obj.getClass().getName() + ". Only String, ERXKey, EOAttribute "
+						+ "or collection of them are valid.");
 			}
 		}
 		return this;
@@ -746,7 +753,7 @@ public class ERXQuery {
 		)
 	{
 		// Array to hold fetched records
-		final NSMutableArray<T> records = new NSMutableArray<>();
+		final NSMutableArray<NSMutableDictionary<String, Object>> rows = new NSMutableArray<>();
 		
 		// Create channel action anonymous class for evaluating SQL and fetching records
 		ChannelAction action = new ERXEOAccessUtilities.ChannelAction() {
@@ -770,33 +777,16 @@ public class ERXQuery {
 				// Fetch results 
 				try {
 					boolean hasInitValues = initValues.count() > 0;
-					boolean removeForeignKeysFromRowValues = ERXProperties.booleanForKeyWithDefault("er.extensions.eof.ERXQuery.removeForeignKeysFromRowValues", true);
 					NSMutableDictionary<String, Object> row = channel.fetchRow();
 					while (row != null) {
-						// Replace any foreign keys with their corresponding relationship keys
-						// and the enterprise object as the value.
-						for (RelationshipKeyInfo relKeyInfo : relationshipKeysSet.allObjects()) {
-							Object eo = null;
-							String entityName = relKeyInfo.entityName();
-							String relationshipKey = relKeyInfo.relationshipKeyPath();
-							String foreignKey = relKeyInfo.sourceAttributeKeyPath();
-							Object primaryKeyValue = row.objectForKey(foreignKey);
-							if (primaryKeyValue != NSKeyValueCoding.NullValue) {
-								eo = ERXEOControlUtilities.objectWithPrimaryKeyValue(ec, entityName, primaryKeyValue, null, refreshRefetchedObjects);
-								row.setObjectForKey(eo, relationshipKey);
-							}
-							if (removeForeignKeysFromRowValues) {
-								row.removeObjectForKey(foreignKey);
-							}
-						}
 						if (hasInitValues) {
 							row.addEntriesFromDictionary(initValues);
 						}
-						T obj = recordConstructor.constructRecord(ec, row); 
-						records.addObject(obj);
+						rows.add(row);
+						
 						// If a fetch limit was specified then exit fetch-loop as soon 
 						// as the limit is reached
-						if (clientFetchLimit > 0 && records.count() >= clientFetchLimit) {
+						if (clientFetchLimit > 0 && rows.count() >= clientFetchLimit) {
 							break;
 						}
 						row = channel.fetchRow();
@@ -807,12 +797,37 @@ public class ERXQuery {
 				} finally {
 					channel.cancelFetch();
 				}
-				return records.count();
+				return rows.count();
 			}
 		};
 		
 		// Perform the action to evaluate the SQL and fetch the records
 		action.perform(ec, expression.entity().model().name());
+		
+		// Array to hold fetched records
+		final NSMutableArray<T> records = new NSMutableArray<>();
+		boolean removeForeignKeysFromRowValues = ERXProperties.booleanForKeyWithDefault("er.extensions.eof.ERXQuery.removeForeignKeysFromRowValues", true);
+		for (NSMutableDictionary<String, Object> row : rows) {
+			// Replace any foreign keys with their corresponding relationship keys
+			// and the enterprise object as the value.
+			for (RelationshipKeyInfo relKeyInfo : relationshipKeysSet.allObjects()) {
+				Object eo = null;
+				String entityName = relKeyInfo.entityName();
+				String relationshipKey = relKeyInfo.relationshipKeyPath();
+				String foreignKey = relKeyInfo.sourceAttributeKeyPath();
+				Object primaryKeyValue = row.objectForKey(foreignKey);
+				if (primaryKeyValue != NSKeyValueCoding.NullValue) {
+					eo = ERXEOControlUtilities.objectWithPrimaryKeyValue(ec, entityName, primaryKeyValue, null, refreshRefetchedObjects);
+					row.setObjectForKey(eo, relationshipKey);
+				}
+				if (removeForeignKeysFromRowValues) {
+					row.removeObjectForKey(foreignKey);
+				}
+			}
+			T obj = recordConstructor.constructRecord(ec, row); 
+			records.addObject(obj);
+		}
+
 		return records;
 	}
 	
@@ -839,11 +854,59 @@ public class ERXQuery {
 				if (externalType != null) adaptorSelectAttribute.setExternalType(externalType);
 				if (className != null) adaptorSelectAttribute.setClassName(className);
 				if (valueType != null) adaptorSelectAttribute.setValueType(valueType);
+				
+				adaptorSelectAttribute.setAdaptorValueConversionClassName(selectAttribute.adaptorValueConversionClassName());
+				adaptorSelectAttribute.setAdaptorValueConversionMethodName(selectAttribute.adaptorValueConversionMethodName());
+				adaptorSelectAttribute.setFactoryMethodArgumentType(selectAttribute.factoryMethodArgumentType());
+				adaptorSelectAttribute.setValueFactoryMethodName(selectAttribute.valueFactoryMethodName());
+				// Defined in the ERXAttributeExtension EOAttribute but not visible by the compiler we use a runtime trick...
+				// adaptorSelectAttribute.setValueFactoryClassName(selectAttribute.valueFactoryClassName());
+				try {
+					String valueFactoryClassName = (String) NSKeyValueCoding.DefaultImplementation.valueForKey(selectAttribute, "valueFactoryClassName");
+					NSKeyValueCoding.DefaultImplementation.takeValueForKey(adaptorSelectAttribute, valueFactoryClassName, "valueFactoryClassName");
+				}
+				catch (Exception e) {} // Fail if ERXAttributeExtension is not loaded but you cannot use factory class anyway
 			}
 			adaptorChannel.setAttributesToFetch(adaptorSelectAttributes);
 		}
 	}
 	
+	/**
+	 * Convenience method for fetching a single attribute from a query resulting in zero
+	 * or one record. For example:
+	 * 
+	 * Number count = (Number) ERXQuery.create().selectCount().from(entity).where(qual).fetchValue();
+	 * 
+	 * @return The value or null when the query returns zero records or an NSKeyValueCoding.NullValue.
+	 */
+	public Object fetchValue() {
+		NSArray<NSDictionary<String, Object>> records = fetch();
+		int count = records.count();
+		
+		if (count == 0) {
+			return null;
+		}
+		
+		if (count > 1) {
+			throw new RuntimeException(getClass().getSimpleName() 
+					+ " fetchValue() must be used with a query that returns one or zero records." 
+					+ " This query returned " + count + " records.");
+		}
+		
+		NSDictionary<String, Object> rec = records.lastObject();
+		NSArray<Object> values = rec.allValues();
+		count = values.count();
+		if (count != 1) {
+			throw new RuntimeException(getClass().getSimpleName() 
+					+ " fetchValue() must be used with a query that fetches a single attribute." 
+					+ " This query fetched " + count + " attributes.");
+		}
+		Object value = values.lastObject();
+		if (value == NSKeyValueCoding.NullValue) {
+			return null;
+		}
+		return value;
+	}
 	
 	/** 
 	 * Sets the table alias to use for a given relationship name. For example, if
@@ -929,55 +992,39 @@ public class ERXQuery {
 		EOSQLExpression e = factory.selectStatementForAttributes(selectAttributes, false, spec, mainEntity);
 
 		// Start building the SELECT... FROM ... 
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT ");
+		StringBuilder columnList = new StringBuilder();
 		if (queryHint != null) {
-			sql.append(" " + queryHint + " ");
+			columnList.append(" " + queryHint + " ");
 		}
 		if (usesDistinct && !isCountingStatement) {
-			sql.append("DISTINCT ");
+			columnList.append("DISTINCT ");
 		}
 
 		if (isCountingStatement) {
 			NSArray<String> pKeyNames = mainEntity.primaryKeyAttributeNames();
 			if (usesDistinct && pKeyNames.count() == 1) {
 				EOAttribute attribute = mainEntity.attributeNamed(pKeyNames.lastObject());
-				sql.append("COUNT(DISTINCT t0." + attribute.columnName() + " )");
+				columnList.append("COUNT(DISTINCT t0." + attribute.columnName() + " )");
 			} else {
-				sql.append("COUNT(*)");
+				columnList.append("COUNT(*)");
 			}
 			
 		} else {
-			sql.append(e.listString());
-		} 
-		sql.append("\n");
-		sql.append("FROM ");
-		sql.append(e.tableListWithRootEntity(mainEntity));
-		sql.append("\n");
+			columnList.append(e.listString());
+		}
+		
+		// Add table list
+		String tableList = e.tableListWithRootEntity(mainEntity);
 		
 		// Add WHERE clause if necessary
 		String joinClauseString = e.joinClauseString();
+		
 		String qualClauseString = e.whereClauseString();
-		boolean hasJoinClause = (joinClauseString != null && joinClauseString.length() > 0);
-		boolean hasQualClause = (qualClauseString != null && qualClauseString.length() > 0);
-		boolean hasWhereClause = (hasJoinClause || hasQualClause);
 		
-		if (hasWhereClause) {
-			sql.append("WHERE \n\t");
-		}
-		
-		if (hasJoinClause) {
-			sql.append(joinClauseString);
-		}
-		
-		if (hasQualClause) {
-			if (hasJoinClause) {
-				sql.append("\n\tAND ");
-			}
-			sql.append(qualClauseString);
-		}
-		
-		// Append GROUP BY clause
+		// Initial code assembled the SQL but was not compatible with FrontBase uses of sqj92 join statements. 
+		// This code uses the database plugin EOSQLExpression to assemble the first parts of the statement.
+		StringBuilder sql = new StringBuilder();
+		sql.append(e.assembleSelectStatementWithAttributes(selectAttributes, false, spec.qualifier(), spec.sortOrderings(), "SELECT ", columnList.toString(), tableList, qualClauseString, joinClauseString, "", null));
 		
 		if (groupingAttributes.count() > 0) {
 			sql.append("\n");
@@ -1780,24 +1827,19 @@ public class ERXQuery {
 			// If the formattedValue is "NULL" then the formatValueForAttribute() did not
 			// do its job and we'll do the best we can here
 			if (formattedValue == null || formattedValue.equals("NULL")) {
-				if (value instanceof String) {
-					formattedValue = sqlExpression.formatStringValue((String)value);
-				} else if (value instanceof NSTimestamp) {
-					NSTimestamp timestamp = (NSTimestamp) value;
-					formattedValue = formattedTimestampForInlineUse(sqlExpression, timestamp, attribute);
-				} else if (value instanceof Boolean) {
-					boolean boolValue = (Boolean) value;
-					// If stored in the database as a string then format as string
-					// otherwise format as a number 1 or 0.
-					if (attribute.externalType().toLowerCase().contains("char")) {
-						formattedValue = "'" + boolValue +"'";
-					} else if (boolValue) {
-						formattedValue = EOSQLExpression.sqlStringForNumber(1);
-					} else {
-						formattedValue = EOSQLExpression.sqlStringForNumber(0);
-					}
+				// Ask the attribute to convert the value to adaptor type, this reduce the number of cases.
+				// Possible value type are now String, Date, Number or NSData
+				Object attributeValue = attribute.adaptorValueByConvertingAttributeValue(value);
+				if (attributeValue instanceof String) {
+					formattedValue = sqlExpression.formatStringValue((String)attributeValue);
+				} else if (attributeValue instanceof Date) {
+					Date date = (Date) attributeValue;
+					formattedValue = formattedTimestampForInlineUse(sqlExpression, date, attribute);
+				} else if (value instanceof NSData) {
+					NSData data = (NSData) value;
+					formattedValue = "X'" + ERXStringUtilities.byteArrayToHexString(data._bytesNoCopy()) + "'";
 				} else {
-					formattedValue = value.toString();
+					formattedValue = attributeValue.toString();
 				}
 			}
 		}
@@ -1813,7 +1855,7 @@ public class ERXQuery {
 		return plugin.databaseProductName().toLowerCase();
 	}
 	
-	protected String formattedTimestampForInlineUse(EOSQLExpression sqlExpression, NSTimestamp timestamp, EOAttribute attribute) {
+	protected String formattedTimestampForInlineUse(EOSQLExpression sqlExpression, Date timestamp, EOAttribute attribute) {
 		EOEntity entity = attribute.entity();
 		String databaseProductName = databaseProductName(entity);
 		//NSTimestampFormatter formatter = new NSTimestampFormatter("%Y-%m-%d %H:%M:%S");
@@ -1829,6 +1871,7 @@ public class ERXQuery {
 		case "oracle":
 			// See http://docs.oracle.com/cd/B19306_01/server.102/b14200/functions183.htm
 			formattedValue = "TO_DATE('" + formattedValue + "', 'YYYY-MM-DD HH24:MI:SS')";
+			break;
 		case "postgresql":
 			// See https://www.postgresql.org/docs/7.4/static/functions-formatting.html
 			formattedValue = "TO_DATE('" + formattedValue + "', 'YYYY-MM-DD HH24:MI:SS')";
@@ -1895,6 +1938,144 @@ public class ERXQuery {
 		}
 	}
 
+
+
+	/**
+	 * Convenience class for fetching data into records conforming to key value coding.  What is
+	 * special about this record is its handling of key-value-coding.  For example, when fetching
+	 * keys that represent a key path to another object, i.e. "a.b.c", then the records fetched
+	 * end up with C objects as values for the key named "a.b.c".  If you use regular dictionaries
+	 * to fetch these records then you would have to use valueForKey() or objectForKey() to retrieve
+	 * the C object stored under the key "a.b.c".  You would then be able to apply a key path to C.
+	 * For example, instead of this boilerplate:
+	 * 
+	 * <pre>
+	 * String name = "";
+	 * C c = null;
+	 * Object value = rec.objectForKey("a.b.c");
+	 * if (value != NSKeyValueCoding.NullValue) {
+	 *     c = (C) value;
+	 *     name = (String) c.valueForKeyPath("x.y.name");
+	 * }
+	 * </pre>
+	 * 
+	 * you can use regular valueForKeyPath() like this:
+	 * 
+	 * <pre>
+	 * String name = (String) rec.valueForKeyPath("a.b.c.x.y.name");
+	 * </pre>
+	 * 
+	 * Values of NSKeyValueCoding.NullValue are automatically translated to null and you can use
+	 * the valueForKeyPathWithDefault() method to translate null to a default value and get rid of
+	 * casting the value like this:
+	 * 
+	 * <pre>
+	 * String name = rec.valueForKeyPathWithDefault("a.b.c.x.y.name", "");
+	 * </pre>
+	 */
+	public static class Record implements NSKeyValueCoding, NSKeyValueCodingAdditions {
+		private NSMutableDictionary<String,Object> data;
+		private String[] _sortedKeys;
+		
+		public Record(EOEditingContext context, NSMutableDictionary<String,Object> row) {
+			data = row;
+		}
+		
+		private String[] sortedKeys() {
+			if (_sortedKeys == null) {
+				Object[] objs = data.allKeys().toArray();
+				String[] keys = new String[objs.length];
+				for (int i = 0; i < objs.length; i++) {
+					keys[i] = objs[i].toString();
+				}
+				// Sort by key length with longer keys first, i.e. "a.b.c.d", "x.y", etc.
+				// This is necessary for the smart algorithm in valueForKeyPath() where
+				// multiple keys in the key path are a single key in the data dictionary
+				// and the value returned from the dictionary gets applied the remaining
+				// key path using valueForKeyPath. 
+				Arrays.sort(keys, (a,b) -> b.length() - a.length());
+				
+				_sortedKeys = keys;
+			}
+			return _sortedKeys;
+		}
+		
+		//
+		// NSKeyValueCoding
+		//
+		
+		@Override
+		public void takeValueForKey(Object value, String key) {
+			if (value == null) {
+				data.setObjectForKey(NSKeyValueCoding.NullValue, key);
+			} else {
+				data.setObjectForKey(value, key);
+			}
+		}
+
+		@Override
+		public Object valueForKey(String key) {
+			Object value = data.objectForKey(key);
+			
+			// Translate NullValue placeholder to java null
+			if (value == NSKeyValueCoding.NullValue) {
+				return null;
+			}
+			
+			return value;
+		}
+		
+		//
+		// NSKeyValueCodingAdditions
+		//
+		
+		@Override
+		public void takeValueForKeyPath(Object value, String keyPath) {
+			for (String aKey : sortedKeys()) {
+				if (aKey.length() < keyPath.length() && keyPath.startsWith(aKey)) {
+					Object obj = valueForKey(aKey);
+					String remainingKeyPath = keyPath.substring(aKey.length() + 1);
+					NSKeyValueCodingAdditions.Utility.takeValueForKeyPath(obj, value, remainingKeyPath);
+					return;
+				}
+			}
+			String key = keyPath;
+			takeValueForKey(value, key);
+		}
+		
+		@Override
+		public Object valueForKeyPath(String keyPath) {
+			for (String aKey : sortedKeys()) {
+				if (aKey.length() < keyPath.length() && keyPath.startsWith(aKey)) {
+					Object obj = valueForKey(aKey);
+					String remainingKeyPath = keyPath.substring(aKey.length() + 1);
+					Object value = NSKeyValueCodingAdditions.Utility.valueForKeyPath(obj, remainingKeyPath);
+					if (value == NSKeyValueCodingAdditions.NullValue) {
+						value = null;
+					}
+					return value;
+				}
+			}
+			return valueForKey(keyPath);
+		}
+		
+		// Convenience method
+		
+		@SuppressWarnings("unchecked")
+		public <V> V valueForKeyPathWithDefault(String keyPath, V defaultValue) {
+			Object v = valueForKeyPath(keyPath);
+			if (v == null) {
+				return defaultValue;
+			}
+			return (V) v;
+		}
+		
+		@Override
+		public String toString() {
+			return "<" + ERXQuery.class.getSimpleName() + "." + getClass().getSimpleName() 
+					+ ": " + data + ">";
+		}
+	}
 
 	//
 	// The EntityModificationAction class
