@@ -14,7 +14,6 @@
 		<module>Ajax</module>
 		<module>BusinessLogic</module>
 		<module>Core</module>
-		<module>D2W</module>
 		<module>EOF</module>
 		<module>Misc</module>
 		<module>PlugIns</module>

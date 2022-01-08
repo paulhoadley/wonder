@@ -10,10 +10,8 @@
 	<packaging>pom</packaging>
 	<name>Core Frameworks</name>
 	<modules>
-		<module>ERDirectToWeb</module>
 		<module>ERExtensions</module>
 		<module>ERJavaMail</module>
-		<module>ERNeutralLook</module>
 		<module>ERPrototypes</module>
 		<module>JavaWOExtensions</module>
 		<module>WOOgnl</module>
