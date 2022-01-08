@@ -10,10 +10,8 @@
 
     <modules>
         <module>Applications</module>
-        <module>Examples</module>
         <module>Frameworks</module>
         <module>Tests</module>
-        <module>Utilities</module>
     </modules>
 
     <properties>

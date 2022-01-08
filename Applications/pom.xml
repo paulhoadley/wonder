@@ -11,10 +11,7 @@
 	<packaging>pom</packaging>
 	<name>Applications</name>
 	<modules>
-		<module>BugTracker</module>
-		<module>ERMailer</module>
 		<module>JavaMonitor</module>
-		<module>Uber</module>
 		<module>wotaskd</module>
 	</modules>
 </project>
