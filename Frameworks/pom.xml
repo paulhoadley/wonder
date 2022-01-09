@@ -12,10 +12,20 @@
   <name>Frameworks</name>
   <modules>
     <module>Ajax</module>
-    <module>BusinessLogic</module>
-    <module>Core</module>
-    <module>EOF</module>
-    <module>Misc</module>
-    <module>PlugIns</module>
+    <module>ERAttachment</module>
+    <module>ERAttributeExtension</module>
+    <module>ERExtensions</module>
+    <module>ERJavaMail</module>
+    <module>ERJGroupsSynchronizer</module>
+    <module>ERPDFGeneration</module>
+    <module>ERProfiling</module>
+    <module>ERPrototypes</module>
+    <module>ERRest</module>
+    <module>ERTaggable</module>
+    <module>H2PlugIn</module>
+    <module>JavaMonitorFramework</module>
+    <module>JavaWOExtensions</module>
+    <module>PostgresqlPlugIn</module>
+    <module>WOOgnl</module>
   </modules>
 </project>
