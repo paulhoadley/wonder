@@ -51,10 +51,6 @@
         </dependency>
         <dependency>
             <groupId>com.webobjects</groupId>
-            <artifactId>JavaXML</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.webobjects</groupId>
             <artifactId>JavaEOAccess</artifactId>
         </dependency>
         <dependency>
@@ -68,10 +64,6 @@
         <dependency>
             <groupId>com.webobjects</groupId>
             <artifactId>JavaJDBCAdaptor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.webobjects</groupId>
-            <artifactId>JavaWOJSPServlet</artifactId>
         </dependency>
         <dependency>
             <groupId>com.webobjects</groupId>
