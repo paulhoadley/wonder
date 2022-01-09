@@ -1,5 +1,5 @@
 Wonder Lite
 -----------
 
-This is an experimental and highly pared-down version of [Project
+This is an experimental and _highly_ pared-down version of [Project
 Wonder](https://github.com/wocommunity/wonder).
