@@ -1,1 +1,4 @@
-Resources/**/*.eomodeld~/**
+**/*.eomodeld~/
+**/*.woa/**
+**/*.framework/**
+**/Info.plist
