@@ -1,7 +1,6 @@
-target
 bin
-*.xcodeproj
-*.pbxproj
-ant.*
-dist
+build
+.settings
+target
+*~
 .DS_Store
