@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>wonder</groupId>
-  <artifactId>wonder</artifactId>
-  <version>7.3-SNAPSHOT</version>
+  <groupId>net.logicsquad.wonder</groupId>
+  <artifactId>wonder-lite</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Project Wonder</name>
+  <name>Wonder Lite</name>
 
   <modules>
     <module>Ajax</module>
@@ -65,7 +65,6 @@
   </pluginRepositories>
 
   <build>
-    <testSourceDirectory>${project.basedir}/Tests</testSourceDirectory>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -131,6 +130,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+	<version>3.3.1</version>
         <configuration>
           <failOnError>false</failOnError>
           <additionalparam>-Xdoclint:none</additionalparam>
@@ -167,12 +167,12 @@
         <version>${webobjects.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.core</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>JavaWOExtensions</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.core</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERExtensions</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -182,42 +182,42 @@
         <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>wonder.core</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERPrototypes</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.core</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERJavaMail</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.core</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>WOOgnl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.businesslogic</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERTaggable</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.businesslogic</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERAttachment</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.ajax</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>Ajax</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.eof</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>ERRest</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>wonder.misc</groupId>
+        <groupId>net.logicsquad.wonder</groupId>
         <artifactId>JavaMonitorFramework</artifactId>
         <version>${project.version}</version>
       </dependency>

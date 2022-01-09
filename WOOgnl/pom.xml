@@ -1,51 +1,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
+  <parent>
+	  <groupId>net.logicsquad.wonder</groupId>
+  	<artifactId>wonder-lite</artifactId>
+  	<version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>WOOgnl</artifactId>
+  <name>WOOgnl Framework</name>
+  <packaging>woframework</packaging>
 
-    <parent>
-        <groupId>wonder.frameworks</groupId>
-        <artifactId>core</artifactId>
-        <version>7.3-SNAPSHOT</version>
-    </parent>
+  <dependencies>
+    <dependency>
+      <groupId>com.webobjects</groupId>
+      <artifactId>JavaFoundation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.webobjects</groupId>
+      <artifactId>JavaEOControl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.webobjects</groupId>
+      <artifactId>JavaWebObjects</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ognl</groupId>
+      <artifactId>ognl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
 
-    <groupId>wonder.core</groupId>
-    <artifactId>WOOgnl</artifactId>
-    <name>WOOgnl Framework</name>
-    <packaging>woframework</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.webobjects</groupId>
-            <artifactId>JavaFoundation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.webobjects</groupId>
-            <artifactId>JavaEOControl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.webobjects</groupId>
-            <artifactId>JavaWebObjects</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <sourceDirectory>${basedir}/Sources</sourceDirectory>
-        <plugins>
-            <plugin>
-                <groupId>org.wocommunity</groupId>
-                <artifactId>wolifecycle-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <skipAppleProvidedFrameworks>true</skipAppleProvidedFrameworks>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <sourceDirectory>${basedir}/Sources</sourceDirectory>
+  </build>
 </project>

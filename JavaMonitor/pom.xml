@@ -1,12 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>wonder.applications</groupId>
-		<artifactId>applications</artifactId>
-		<version>7.3-SNAPSHOT</version>
-	</parent>
-
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>wonder.applications</groupId>
+  <parent>
+	  <groupId>net.logicsquad.wonder</groupId>
+  	<artifactId>wonder-lite</artifactId>
+  	<version>1.0-SNAPSHOT</version>
+  </parent>
 	<artifactId>JavaMonitor</artifactId>
 	<name>JavaMonitor Application</name>
 	<packaging>woapplication</packaging>
@@ -17,19 +15,19 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>wonder.core</groupId>
+      <groupId>net.logicsquad.wonder</groupId>
 			<artifactId>ERExtensions</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>wonder.ajax</groupId>
+      <groupId>net.logicsquad.wonder</groupId>
 			<artifactId>Ajax</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>wonder.misc</groupId>
+      <groupId>net.logicsquad.wonder</groupId>
 			<artifactId>JavaMonitorFramework</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>wonder.eof</groupId>
+      <groupId>net.logicsquad.wonder</groupId>
 			<artifactId>ERRest</artifactId>
 		</dependency>
 	</dependencies>
