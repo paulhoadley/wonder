@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>wonder</groupId>
-		<artifactId>wonder</artifactId>
-		<version>7.3-SNAPSHOT</version>
-	</parent>
-	<groupId>wonder.frameworks</groupId>
-	<artifactId>frameworks</artifactId>
-	<packaging>pom</packaging>
-	<name>Frameworks</name>
-	<modules>
-		<module>Ajax</module>
-		<module>BusinessLogic</module>
-		<module>Core</module>
-		<module>EOF</module>
-		<module>Misc</module>
-		<module>PlugIns</module>
-	</modules>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>wonder</groupId>
+    <artifactId>wonder</artifactId>
+    <version>7.3-SNAPSHOT</version>
+  </parent>
+  <groupId>wonder.frameworks</groupId>
+  <artifactId>frameworks</artifactId>
+  <packaging>pom</packaging>
+  <name>Frameworks</name>
+  <modules>
+    <module>Ajax</module>
+    <module>BusinessLogic</module>
+    <module>Core</module>
+    <module>EOF</module>
+    <module>Misc</module>
+    <module>PlugIns</module>
+  </modules>
 </project>
