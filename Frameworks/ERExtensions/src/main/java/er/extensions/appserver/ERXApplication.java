@@ -1093,9 +1093,6 @@ public abstract class ERXApplication extends ERXAjaxApplication implements ERXGr
 		if (contextClassName().equals("WOContext")) {
 			setContextClassName(ERXWOContext.class.getName());
 		}
-		if (contextClassName().equals("WOServletContext") || contextClassName().equals("com.webobjects.jspservlet.WOServletContext")) {
-			setContextClassName(ERXWOServletContext.class.getName());
-		}
 
 		ERXPatcher.setClassForName(ERXWOForm.class, "WOForm");
 		try {
