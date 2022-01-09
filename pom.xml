@@ -8,8 +8,24 @@
   <name>Project Wonder</name>
 
   <modules>
-    <module>Applications</module>
-    <module>Frameworks</module>
+    <module>Ajax</module>
+    <module>ERAttachment</module>
+    <module>ERAttributeExtension</module>
+    <module>ERExtensions</module>
+    <module>ERJavaMail</module>
+    <module>ERJGroupsSynchronizer</module>
+    <module>ERPDFGeneration</module>
+    <module>ERProfiling</module>
+    <module>ERPrototypes</module>
+    <module>ERRest</module>
+    <module>ERTaggable</module>
+    <module>H2PlugIn</module>
+    <module>JavaMonitor</module>
+    <module>JavaMonitorFramework</module>
+    <module>JavaWOExtensions</module>
+    <module>PostgresqlPlugIn</module>
+    <module>WOOgnl</module>
+    <module>wotaskd</module>
   </modules>
 
   <properties>
