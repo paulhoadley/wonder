@@ -14,7 +14,6 @@ to take some thought to excise.
 
 FAQs
 ----
-
-* _My favourite framwork/feature is missing—where did it go?_ It was
+* _My favourite framework/feature is missing—where did it go?_ It was
   deleted. It probably won't be coming back.
 
