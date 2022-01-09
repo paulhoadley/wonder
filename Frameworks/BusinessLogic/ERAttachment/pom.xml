@@ -10,11 +10,6 @@
 	<name>ERAttachment Framework</name>
 	<packaging>woframework</packaging>
 
-	<properties>
-		<!-- VERY BAD PRACTICE: But there are broken tests -->
-		<maven.test.skip>true</maven.test.skip>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>wonder.core</groupId>
@@ -74,7 +69,9 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
+
 	<build>
-		<sourceDirectory>Sources</sourceDirectory>
+	  <sourceDirectory>src/main/java</sourceDirectory>
+	  <testSourceDirectory>src/test/java</testSourceDirectory>
 	</build>
 </project>
