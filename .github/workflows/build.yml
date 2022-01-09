@@ -1,5 +1,9 @@
 name: build
-on: [push]
+on:
+  push:
+    branches:
+      - wonder-lite
+
 jobs:
   build:
     runs-on: ubuntu-latest
