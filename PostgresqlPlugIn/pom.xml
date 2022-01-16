@@ -30,7 +30,4 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <sourceDirectory>Sources</sourceDirectory>
-  </build>
 </project>

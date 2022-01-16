@@ -31,8 +31,4 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <sourceDirectory>${basedir}/Sources</sourceDirectory>
-  </build>
 </project>

@@ -35,7 +35,4 @@
       <artifactId>JavaEOControl</artifactId>
     </dependency>
   </dependencies>
-  <build>
-    <sourceDirectory>Sources</sourceDirectory>
-  </build>
 </project>

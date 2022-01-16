@@ -18,7 +18,4 @@
 			<artifactId>JavaWebObjects</artifactId>
 		</dependency>
 	</dependencies>
-	<build>
-		<sourceDirectory>Sources</sourceDirectory>
-	</build>
 </project>

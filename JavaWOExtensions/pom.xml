@@ -9,9 +9,6 @@
   	<version>1.0-SNAPSHOT</version>
 	<name>JavaWOExtensions Framework</name>
 	<packaging>woframework</packaging>
-	<build>
-		<sourceDirectory>${basedir}/Sources</sourceDirectory>
-	</build>
 	<dependencies>
 		<dependency>
 			<groupId>com.webobjects</groupId>
