@@ -14,6 +14,10 @@ import com.webobjects.foundation.NSKeyValueCoding;
 
 import er.extensions.jdbc.ERXJDBCAdaptor.Channel;
 
+/**
+ * @deprecated This class was renamed and may be removed in the future. Use {@link ERXEnhancedJDBCColumn} instead.
+ */
+@Deprecated
 public class DateJDBCColumn extends ERXJDBCColumn {
 	private static final Logger log = LoggerFactory.getLogger(DateJDBCColumn.class);
 

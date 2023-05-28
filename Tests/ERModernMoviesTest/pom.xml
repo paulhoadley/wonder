@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>wonder.tests</groupId>
 		<artifactId>tests</artifactId>
-		<version>7.3-SNAPSHOT</version>
+		<version>7.4-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -69,8 +69,8 @@
 			<artifactId>JavaDirectToWeb</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>ch.qos.reload4j</groupId>
+			<artifactId>reload4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>

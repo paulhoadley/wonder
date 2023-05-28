@@ -3,7 +3,7 @@
     <parent>
         <groupId>wonder.frameworks</groupId>
         <artifactId>core</artifactId>
-        <version>7.3-SNAPSHOT</version>
+        <version>7.4-SNAPSHOT</version>
     </parent>
 
     <groupId>wonder.core</groupId>
@@ -83,8 +83,8 @@
             <artifactId>icu4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>ch.qos.reload4j</groupId>
+            <artifactId>reload4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

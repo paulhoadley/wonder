@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>wonder.frameworks</groupId>
 		<artifactId>misc</artifactId>
-		<version>7.3-SNAPSHOT</version>
+		<version>7.4-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -15,6 +15,10 @@
 		<dependency>
 			<groupId>wonder.core</groupId>
 			<artifactId>ERExtensions</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>wonder.ajax</groupId>
+			<artifactId>Ajax</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>wonder.eof</groupId>

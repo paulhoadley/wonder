@@ -2,11 +2,10 @@
 	<parent>
 		<groupId>wonder.tests</groupId>
 		<artifactId>tests</artifactId>
-		<version>7.3-SNAPSHOT</version>
+		<version>7.4-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>wonder.tests</groupId>
 	<artifactId>ERXTest</artifactId>
 	<name>ERXTest Application</name>
 	<packaging>woapplication</packaging>
@@ -18,6 +17,10 @@
 		<dependency>
 			<groupId>wonder.core</groupId>
 			<artifactId>ERExtensions</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>wonder.core</groupId>
+			<artifactId>ERPrototypes</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.webobjects</groupId>

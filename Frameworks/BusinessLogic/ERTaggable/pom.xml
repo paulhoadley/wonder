@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>wonder.frameworks</groupId>
 		<artifactId>businesslogic</artifactId>
-		<version>7.3-SNAPSHOT</version>
+		<version>7.4-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>wonder.businesslogic</groupId>
@@ -18,6 +18,10 @@
 			<groupId>wonder.core</groupId>
 			<artifactId>ERPrototypes</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>wonder.ajax</groupId>
+			<artifactId>ERCoolComponents</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.webobjects</groupId>
