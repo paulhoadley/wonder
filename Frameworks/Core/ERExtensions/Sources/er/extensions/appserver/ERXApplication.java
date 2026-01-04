@@ -524,40 +524,38 @@ public abstract class ERXApplication extends ERXAjaxApplication implements ERXGr
 						}
 						// MS: This is totally hacked in to make Wonder startup properly with the new rapid turnaround. It's duplicating (poorly)
 						// code from NSProjectBundle. I'm not sure we actually need this anymore, because NSBundle now fires an "all bundles loaded" event.
-						else if (jar.endsWith("/bin") && new File(new File(jar).getParentFile(), ".project").exists()) {
+						else if ((jar.endsWith("/bin") && new File(new File(jar).getParentFile(), "build.properties").exists()) || (jar.endsWith("/target/classes") && new File(new File(jar).getParentFile().getParentFile(), "build.properties").exists())) {
 							// AK: I have no idea if this is checked anywhere else, but this keeps is from having to set it in the VM args.
 							debugMsg("Plain bundle: " + jar);
 							for (File classpathFolder = new File(bundle); classpathFolder != null && classpathFolder.exists(); classpathFolder = classpathFolder.getParentFile()) {
-								File projectFile = new File(classpathFolder, ".project");
-								if (projectFile.exists()) {
+								File buildPropertiesFile = new File(classpathFolder, "build.properties");
+
+								if (buildPropertiesFile.exists()) {
 									try {
 										boolean isBundle = false;
-										Document projectDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(projectFile);
-										projectDocument.normalize();
-										NodeList natureNodeList = projectDocument.getElementsByTagName("nature");
-										for (int natureNodeNum = 0; !isBundle && natureNodeNum < natureNodeList.getLength(); natureNodeNum ++) {
-											Element natureContainerNode = (Element)natureNodeList.item(natureNodeNum);
-											Node natureNode = natureContainerNode.getFirstChild();
-											String nodeValue = natureNode.getNodeValue();
-											// AK: we don't actually add apps to the bundle process (Mike, why not!?)
-											if (nodeValue != null && nodeValue.startsWith("org.objectstyle.wolips.") && !nodeValue.contains("application")) {
-												isBundle = true;
+										String bundleName = classpathFolder.getName();
+										
+										if (buildPropertiesFile.exists()) {
+											Properties buildProperties = new Properties();
+											buildProperties.load(new FileReader(buildPropertiesFile));
+											if (buildProperties.get("project.name") != null) {
+												// the project folder might be named differently than the actual bundle name
+												bundleName = (String) buildProperties.get("project.name");
+
+												// Basing isBundle on "project.type" (commented out code) is probably better, but the maven archetypes don't contain a "project.type" property // Hugi 2025-11-07
+												isBundle = bundleName != null;
+												/*
+												String projectType = (String) buildProperties.get("project.type");
+												
+												if( "application".equals(projectType) || "framework".equals(projectType) ) {
+													isBundle = true;
+												}
+												*/
 											}
 										}
+
 										if (isBundle) {
 											System.setProperty("NSProjectBundleEnabled", "true");
-											String bundleName = classpathFolder.getName();
-
-											File buildPropertiesFile = new File(classpathFolder, "build.properties");
-											if (buildPropertiesFile.exists()) {
-												Properties buildProperties = new Properties();
-												buildProperties.load(new FileReader(buildPropertiesFile));
-												if (buildProperties.get("project.name") != null) {
-													// the project folder might be named differently than the actual bundle name
-													bundleName = (String) buildProperties.get("project.name");
-												}
-											}
-											
 											allFrameworks.add(bundleName);
 											debugMsg("Added Binary Bundle (Project bundle): " + bundleName);
 										} else {
@@ -565,11 +563,11 @@ public abstract class ERXApplication extends ERXAjaxApplication implements ERXGr
 										}
 									}
 									catch (Throwable t) {
-										System.err.println("Skipping '" + projectFile + "': " + t);
+										System.err.println("Skipping '" + buildPropertiesFile + "': " + t);
 									}
 									break;
 								}
-								debugMsg("Skipping, no project: " + projectFile);
+								debugMsg("Skipping, no project: " + buildPropertiesFile);
 							}
 						}
 					}

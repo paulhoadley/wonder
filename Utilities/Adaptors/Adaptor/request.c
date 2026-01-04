@@ -1,6 +1,6 @@
 /*
 
-Copyright © 2000-2007 Apple, Inc. All Rights Reserved.
+Copyright ï¿½ 2000-2007 Apple, Inc. All Rights Reserved.
 
 The contents of this file constitute Original Code as defined in and are
 subject to the Apple Public Source License Version 1.1 (the 'License').
@@ -134,11 +134,19 @@ void req_reformatRequest(HTTPRequest *req, WOAppReq *app, WOURLComponents *wc, c
        strcat(req->request_str,http_version);
        if (strcasecmp(http_version,"HTTP/1.1") == 0)
        {
-           req_addHeader(req, "Host", app->host, 0);
+           /* Only add Host header if it doesn't already exist (avoid duplicate headers) */
+           if (!req_HeaderForKey(req, "Host"))
+           {
+               req_addHeader(req, "Host", app->host, 0);
+           }
        }
    } else {
        strcat(req->request_str,default_http_version);
-       req_addHeader(req, "Host", app->host, 0);
+       /* Only add Host header if it doesn't already exist (avoid duplicate headers) */
+       if (!req_HeaderForKey(req, "Host"))
+       {
+           req_addHeader(req, "Host", app->host, 0);
+       }
    }
    strcat(req->request_str,"\r\n");
 
